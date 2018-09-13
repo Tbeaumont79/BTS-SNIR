@@ -1,0 +1,12 @@
+  714  cat > test
+  715  more test 
+  716  cat sortie.txt > exo1
+  717* 
+  718  wc tutu 2> erreur 
+  719  ls > sortie.txt 
+  720  more sortie.txt 
+  721  cat sortie.txt erreur > exo2
+  722  more exo2
+  723  ls | tail > sortie.txt 
+  724  more sortie.txt
+  724  more >> sortie.txt
