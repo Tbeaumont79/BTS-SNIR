@@ -1,0 +1,518 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>XamPNM by A.M.</title>
+	<meta name="changedby" content="Alain Menu"/>
+	<style type="text/css">
+		td p { margin-bottom: 0.1cm; text-align: center }
+		p { margin-bottom: 0cm }
+		pre.cjk { font-family: "AR PL UMing HK", monospace }
+		p.xamgraph-chapitre-western { margin-top: 0.5cm; margin-bottom: 0.3cm; background: #ccccff; font-family: "Albany", sans-serif; font-size: 14pt; page-break-after: avoid }
+		p.xamgraph-chapitre-cjk { margin-top: 0.5cm; margin-bottom: 0.3cm; background: #ccccff; page-break-after: avoid }
+		p.xamgraph-chapitre-ctl { margin-top: 0.5cm; margin-bottom: 0.3cm; background: #ccccff; page-break-after: avoid }
+		p.xamgraph-chapitre2-western { margin-top: 0.5cm; margin-bottom: 0.3cm; background: transparent; font-family: "Albany", sans-serif; font-size: 14pt; font-style: italic; page-break-after: avoid }
+		p.xamgraph-chapitre2-cjk { margin-top: 0.5cm; margin-bottom: 0.3cm; background: transparent; page-break-after: avoid }
+		p.xamgraph-chapitre2-ctl { margin-top: 0.5cm; margin-bottom: 0.3cm; background: transparent; page-break-after: avoid }
+		p.xamgraph-protoc-western { margin-top: 0.6cm; margin-bottom: 0.1cm; background: #ccffff; color: #660066; font-family: "Courier New", monospace; font-size: 11pt; font-weight: bold }
+		p.xamgraph-protoc-cjk { margin-top: 0.6cm; margin-bottom: 0.1cm; background: #ccffff }
+		p.xamgraph-protoc-ctl { margin-top: 0.6cm; margin-bottom: 0.1cm; background: #ccffff }
+		p.xamgraph-protocpp-western { margin-bottom: 0.1cm; background: #ffffcc; color: #0066cc; font-family: "Courier New", monospace; font-size: 11pt; font-weight: bold }
+		p.xamgraph-protocpp-cjk { margin-bottom: 0.1cm; background: #ffffcc; color: #0066cc }
+		p.xamgraph-protocpp-ctl { margin-bottom: 0.1cm; background: #ffffcc; color: #0066cc }
+		a:link { background: transparent; text-decoration: none }
+	</style>
+</head>
+<body lang="fr-FR" dir="ltr">
+
+<table width="100%" cellpadding="4" cellspacing="0" style="page-break-before: always">
+	<col width="256*">
+	<thead>
+		<tr>
+			<td width="100%" style="border: none; padding: 0cm">
+				<h1 align="center"><br/>XamPNM version 0.6</h1>
+				<p align="center">Copyright (c)2007-2017 by Alain Menu</p>
+				<p align="center">&lt; <a href="mailto:alain.menu@ac-creteil.fr">alain.menu@ac-creteil.fr</a>
+				&gt;</p>
+				<p align="center"><br/>
+
+				</p>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td width="100%" style="border: none; padding: 0cm">
+				<p align="center" style="border: none; padding: 0cm"><a href="#_synopsys">Synopsys</a>
+				– <a href="#_categories">Interface publique</a> – <a href="#_meo">Mise
+				en oeuvre</a> – <a href="#_heritage">Spécialisation</a></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p style="margin-bottom: 0.5cm">
+XamPNM est une classe de base dédiée à la manipulation d'images de type PNM.
+Elle reconnaît tous les types P1, P2, P3, P4, P5 et P6, soit tous les formats PBM, PGM ou PPM, binaires (<i>raw</i>) et ASCII (<i>plain</i>) ;
+avec une profondeur maximale de 8 bits par teinte (256 niveaux de gris ou codage RVB sur 24 bits).
+</p>
+
+<p class="xamgraph-chapitre2-western">Principe de fonctionnement</p>
+<P>XamPNM assure le chargement d'un fichier PNM et le stockage des points de l'image dans un plan privé nommé '<i>raster</i>'. La projection de ce plan sur l'écran est déléguée à un objet de classe <a href="XamGraph-sdl.html">XamGraph</a> (agrégation).</p>
+<p>La classe <a href="XamGraph-sdl.html">XamGraph</a> est capable de gérer trois plans graphiques de tailles identiques : le plan '<i>screen</i>' visible sur l'écran, un plan '<i>bitmap</i>' en mémoire, et un plan '<i>save</i>' permettant de conserver puis de restituer une copie du plan '<i>screen</i>'. En règle générale, les traitements effectués sur une image sont réalisés sur le plan '<i>bitmap</i>', puis ce plan est copié sur '<i>screen</i>' (ce qui permet un affichage  beaucoup plus rapide que lors d'un travail direct en mémoire vidéo sur le plan '<i>screen</i>'...).</p>
+<p>Le synoptique ci-dessous montre les transferts possibles des points d'une image :</p>
+
+<p align="center" style="margin-bottom: 0.3cm; line-height: 100%">
+<img src="synoptic_pnm.png" align="middle" width="863" height="261" border="0"/>
+</p>
+
+<p>Un objet XamPNM est associable à une instance active de <a href="XamGraph-sdl.html">XamGraph</a> jouant alors le rôle de visualiseur de l'image. Dans la présente documentation, le '<i>display</i>' représente aussi bien le plan '<i>screen</i>' que le plan '<i>bitmap</i>', suivant la sélection
+en cours au niveau du visualiseur <a href="XamGraph-sdl.html">XamGraph</a>.</p>
+<p>XamPNM et ses classes dérivées peuvent accéder à toutes les ressources publiques proposées par <a href="XamGraph-sdl.html">XamGraph</a> au moyen de l'agrégation protégée <font face="Courier New, monospace">gr</font>.</p>
+
+<a name="_synopsys"></a>
+<p class="xamgraph-chapitre-western">Synopsys</p>
+<p style="margin-bottom: 0.5cm"><font face="Courier New, monospace"><font size="3" style="font-size: 12pt">#include &lt;xampnm.h&gt;</font></font></p>
+
+<a name="_categories"></a>
+<p class="xamgraph-chapitre-western">Interface publique</p>
+
+<table width="100%" cellpadding="5" cellspacing="0" style="page-break-before: auto; page-break-inside: avoid">
+	<col width="85*">
+	<col width="85*">
+	<col width="85*">
+	<tr valign="top">
+		<td width="33%" style="border-top: 1px double #808080; border-bottom: 1px double #808080; border-left: 1px double #808080; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<p>catégories</p>
+		</td>
+		<td colspan="2" width="67%" style="border: 1px double #808080; padding: 0.1cm">
+			<p align="center">liste alphabétique des méthodes publiques et protégées</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="33%" style="border-top: none; border-bottom: 1px double #808080; border-left: 1px double #808080; border-right: none; padding-top: 0.3cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<ul>
+				<li/><a href="#_cycledevie">Cycle de vie</a>
+				<ul>
+					<li/><a href="#_creation">Création&nbsp;/&nbsp;Destruction</a>
+					<li/><a href="#_sauvegarde">Chargement&nbsp;/&nbsp;Sauvegarde</a>
+				</ul>
+				<li/><a href="#_image">Caractéristiques de l'image</a>
+				<ul>
+					<li/><a href="#_name">Nom de fichier</a>
+					<li/><a href="#_pnm">Type PNM</a>
+					<li/><a href="#_dimensions">Dimensions</a>
+				</ul>
+				<li/><a href="#_projection">Projection de l'image</a>
+				<ul>
+					<li/><a href="#_setdisplay">Association avec <a href="XamGraph-sdl.html">XamGraph</a></a>
+					<li/><a href="#_write">Transferts image-écran</a>
+				</ul>
+				<li/><a href="#_pixel">Manipulation des pixels du <i>raster</i></a>
+				<li/><a href="#_spectrum">Spectres RGB</a>
+			</ul>
+		</td>
+		<td width="33%" style="border-top: none; border-bottom: 1px double #808080; border-left: 1px double #808080; border-right: none; padding-top: 0.3cm; padding-bottom: 0.3cm; padding-left: 1cm; padding-right: 0cm">
+			<ul>
+				<li/><a href="#constructeurs">XamPNM()</a> [constructeurs]
+				<li/><a href="#destructeur">~XamPNM()</a> [destructeur]
+				<li/><a href="#blue">blue()</a>
+				<li/><a href="#bspectrum">bSpectrum()</a>
+				<li/><a href="#filename">fileName()</a>
+				<li/><a href="#gray">gray()</a>
+				<li/><a href="#green">green()</a>
+				<li/><a href="#gspectrum">gSpectrum()</a>
+				<li/><a href="#height">height()</a>
+				<li/><a href="#israw">isRaw()</a>
+				<li/><a href="#isrgb">isRgb()</a>
+				<li/><a href="#load">load()</a>
+				<li/><a href="#magicnumber">magicNumber()</a>
+				<li/><a href="#maxval">maxVal()</a>
+				<li/><a href="#normalize">normalize()</a>
+				<li/><a href="#openfailed">openFailed()</a>
+				<li/><a href="#pixel">pixel()</a>
+			</ul>
+		</td>
+		<td width="33%" style="border-top: none; border-bottom: 1px double #808080; border-left: 1px double #808080; border-right: 1px double #808080; padding-top: 0.3cm; padding-bottom: 0.3cm; padding-left: 1cm; padding-right: 0.1cm">
+			<ul>
+				<li/><a href="#read">read()</a>
+				<li/><a href="#red">red()</a>
+				<li/><a href="#rspectrum">rSpectrum()</a>
+				<li/><a href="#save">save()</a>
+				<li/><a href="#setblue">setBlue()</a>
+				<li/><a href="#setdisplay">setDisplay()</a>
+				<li/><a href="#setgray">setGray()</a>
+				<li/><a href="#setgreen">setGreen()</a>
+				<li/><a href="#setpixel">setPixel()</a>
+				<li/><a href="#setred">setRed()</a>
+				<li/><a href="#spectrum">spectrum()</a>
+				<li/><a href="#spectrummaxvalue">spectrumMaxVal()</a>
+				<li/><a href="#surfacesize">surfaceSize()</a>
+				<li/><a href="#version">version()</a>
+				<li/><a href="#width">width()</a>
+				<li/><a href="#write">write()</a>
+		</ul>
+		</td>
+	</tr>
+</table>
+
+<a name="_cycledevie"></a>
+<p class="xamgraph-chapitre-western">Cycle de vie</p>
+
+<a name="_creation"></a>
+<p class="xamgraph-chapitre2-western">Création&nbsp;/&nbsp;Destruction</p>
+
+<a name="constructeurs"></a>
+<p class="xamgraph-protocpp-western">&nbsp;XamPNM::XamPNM(const char* filename ) ; [constructeur]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Ce constructeur assure le chargement du fichier PNM spécifié en argument.
+En cas d'échec de lecture ou d'incompatibilité de format, des messages sont injectés sur la sortie d'erreur standard.</p>
+
+<p class="xamgraph-protocpp-western">&nbsp;XamPNM::XamPNM(int width, int height, bool isRgb = true ) ; [constructeur]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Constructeur de la classe permettant de préparer une image
+de dimensions <i>width</i> x <i>height</i> de format binaire type PGM ou PPM (PPM par défaut, suivant l'argument <i>isRgb</i>).
+Tous les points sont fixés de couleur noire.
+Le nom interne de l'image est arbitrairement fixé à 'noname' jusqu'à la première sauvegarde.</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">En cas d'échec de réservation mémoire, des messages sont injectés sur la sortie d'erreur standard.</p>
+
+<a name="destructeur"></a>
+<p class="xamgraph-protocpp-western">&nbsp;XamPNM::~XamPNM() ; [destructeur]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Destructeur de la classe.</p>
+
+<a name="version"></a>
+<p class="xamgraph-protocpp-western">&nbsp;string XamPNM::version() ; [static]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthode statique fournissant la version courante de XamPNM.</p>
+
+<a name="_sauvegarde"></a>
+<p class="xamgraph-chapitre2-western">Chargement&nbsp;/&nbsp;Sauvegarde</p>
+
+<a name="openfailed"></a>
+<p class="xamgraph-protocpp-western">&nbsp;bool XamPNM::openFailed() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Compte-rendu de chargement d'une image lors de la construction d'instance
+ou suite à un appel à la méthode protégée <a href="#load">load()</A>.</p>
+
+<a name="save"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::save(const char* filename, bool isRgb = true ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Sauvegarde de l'image courante '<i>raster</i>' dans le fichier spécifié,
+retourne -1 en cas d'erreur ou 0 en cas de succès. Le chemin indiqué ne doit pas comporter d'extension,
+celle-ci est déterminée par les caractéristiques de l'image présente dans le '<i>raster</i>'.
+La sauvegarde est toujours effectuée en format binaire (types P5 ou P6).</p>
+
+<a name="load"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::load(const char* filename ) ; [protected]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthode protégée de chargement dans le '<i>raster</i>' d'un fichier PNM spécifié en argument.
+En cas d'échec de lecture ou d'incompatibilité de format, des messages sont injectés sur la sortie d'erreur standard.</p>
+
+<a name="_image"></a>
+<p class="xamgraph-chapitre-western">Caractéristiques de l'image</p>
+
+<a name="_name"></a>
+<p class="xamgraph-chapitre2-western">Nom de fichier</p>
+
+<a name="filename"></a>
+<p class="xamgraph-protocpp-western">&nbsp;string XamPNM::fileName() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne le nom de fichier de l'image courante.</p>
+
+<a name="_pnm"></a>
+<p class="xamgraph-chapitre2-western">Type PNM</p>
+
+<a name="magicnumber"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::magicNumber() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne le type de fichier PNM sous forme d'un entier compris entre
+1 et 6 (types PNM P1, P2, P3, P4, P5 ou P6).</p>
+
+<a name="israw"></a>
+<p class="xamgraph-protocpp-western">&nbsp;bool XamPNM::isRaw() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne <i>true</i> si l'image courante est de type P4, P5 ou P6, <i>false</i> sinon.</p>
+
+<a name="isrgb"></a>
+<p class="xamgraph-protocpp-western">&nbsp;bool XamPNM::isRgb() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne <i>true</i> si l'image courante est de type PPM P3 ou P6, <i>false</i> sinon.</p>
+
+<a name="_dimensions"></a>
+<p class="xamgraph-chapitre2-western">Dimensions</p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">Les méthodes suivantes fournissent les dimensions et la profondeur
+de l'image présente dans le '<i>raster</i>'. Pour adapter les dimensions de l'image avec celle du '<i>display</i>',
+utiliser la méthode <a href="#surfacesize">surfaceSize().</a></p>
+
+<a name="maxval"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::maxVal() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Profondeur de l'image sous forme de la valeur maximale de codage
+d'une composante couleur d'un pixel ; vaut en général 255, ce qui correspond à une profondeur de 8 bits pour une image
+en niveaux de gris (PGM) et une profondeur de 24 bits pour une image en couleurs (PPM).</p>
+
+<a name="width"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::width() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Largeur de l'image en pixels</p>
+
+<a name="height"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::height() const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Hauteur de l'image en pixels.</p>
+
+<a name="_projection"></a>
+<p class="xamgraph-chapitre-western">Projection de l'image</p>
+
+<a name="_setdisplay"></a>
+<p class="xamgraph-chapitre2-western">Association avec <a href="XamGraph-sdl.html">XamGraph</a></p>
+
+<a name="setdisplay"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setDisplay(<a href="XamGraph-sdl.html">XamGraph</a>* gr ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthode d'agrégation entre l'image PNM et un <i>display</i> compatible
+matérialisé par l'instance active d'un projet <a href="XamGraph-sdl.html">XamGraph</a> ; cette association est indispensable avant l'utilisation des
+méthodes de transfert <a href="#write">write()</a> et <a href="#read">read()</a>.</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Note : Le lien protégé <font face="Courier New, monospace">gr</font> permet aux classes filles de XamPNM
+d'accéder directement aux ressources de laclasse <a href="XamGraph-sdl.html">XamGraph</a>.</p>
+
+<a name="surfacesize"></a>
+<p class="xamgraph-protocpp-western">&nbsp;bool XamPNM::surfaceSize(int& w, int& h, const XamPNM* mask = 0 ) ; [protected]</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthode protégée de comparaison des tailles du plan image '<i>raster</i>' avec celui d'une autre image
+spécifiée par <font face="Courier New, monospace">mask</font>. Si cet argument est nul, la omparaison est faite avec le <i>display</i>
+(plan '<i>screen</i>' de <a href="XamGraph-sdl.html">XamGraph</a>). La méthode affecte <font face="Courier New, monospace">w</font> et <font face="Courier New, monospace">h</font>
+respectivement avec la plus petite largeur et la plus petite hauteur trouvées.</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">La méthode retourne <i>true</i>, sauf lorsque <font face="Courier New, monospace">mask</font> est nul
+et que l'association avec <a href="XamGraph-sdl.html">XamGraph</a> n'a pas été réalisée ; dans ce cas, <font face="Courier New, monospace">w</font> et <font face="Courier New, monospace">h</font>
+ne sont pas modifiés.</p>
+
+<a name="_write"></a>
+<p class="xamgraph-chapitre2-western">Transferts image-écran</p>
+
+<a name="write"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::write(int zoom = 1 ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Projection de la matrice '<i>raster</i>' sur le '<i>display</i>', limitée aux dimensions du '<i>display</i>'.
+Cette méthode est sans effet si l'agrégation avec un objet <a href="XamGraph-sdl.html">XamGraph</a> n'a pas été réalisée par <a href="#setdisplay">setDisplay()</a>.</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">L'argument zoom peut être utilisé pour grossir chaque pixel à l'affichage,
+sous réserve que le '<i>display</i>' associé soit dimensionné en conséquence.</p>
+
+<a name="read"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::read(int zoom = 1 ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Remplissage de la matrice '<i>raster</i>'
+à partir des pixels du '<i>display</i>', limité aux dimensions du '<i>raster</i>'.
+Cette méthode est sans effet si l'agrégation avec un objet <a href="XamGraph-sdl.html">XamGraph</a> n'a pas été réalisée par <a href="#setdisplay">setDisplay()</a>.</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">L'argument zoom peut être utilisé pour réduire chaque pixel lorsque l'image projetée est zoomée.</p>
+
+<a name="_pixel"></a>
+<p class="xamgraph-chapitre-western">Manipulation des pixels du <i>raster</i></p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">Les méthodes de cette rubrique concernent les points
+de l'image chargée dans le '<i>raster</i>' ; elles sont indépendantes du visualiseur <a href="XamGraph-sdl.html">XamGraph</a> et peuvent donc être utilisées
+avant l'association avec celui-ci.</font></p>
+
+<a name="pixel"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint32 XamPNM::pixel(int x, int y ) const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne la couleur du pixel spécifié au format 0xRRGGBBAA avec la canal Alpha
+toujours égal à 0xFF ; ce codage est compatible avec les ressources fournies par <a href="XamGraph-sdl.html">XamGraph</a>.</p>
+
+<a name="setpixel"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b ) ;</p>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setPixel(int x, int y, Uint32 color ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Modificateur de couleur du pixel dont les coordonnées sont
+spécifiés en arguments. La couleur est indiquée par ses composantes R, G et B ou par une valeur 32 bits au format 0xRRGGBBAA
+(dans ce cas, le canal alpha AA est ignoré) ; ce codage est compatible avec les ressources fournies par <a href="XamGraph-sdl.html">XamGraph</a>.</p>
+
+<a name="red"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint8 XamPNM::red(int x, int y ) const ;</p>
+<a name="green"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint8 XamPNM::green(int x, int y ) const ;</p>
+<a name="blue"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint8 XamPNM::blue(int x, int y ) const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Sélecteurs des composantes de couleurs du pixel dont les coordonnées sont
+spécifiés en arguments. Dans le cas d'une image en niveau de gris, les 3 méthodes retourne la même valeur de luminance.</p>
+
+<a name="setred"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setRed(int x, int y, Uint8 r ) ;</p>
+<a name="setgreen"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setGreen(int x, int y, Uint8 g ) ;</p>
+<a name="setblue"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setBlue(int x, int y, Uint8 b ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Modificateurs des composantes de couleurs du pixel dont les coordonnées sont
+spécifiés en arguments.</p>
+
+<a name="gray"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint8 XamPNM::gray(int x, int y ) const ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne la luminance (moyenne des composantes RGB) du pixel dont les coordonnées sont
+spécifiés en arguments..</p>
+
+<a name="setgray"></a>
+<p class="xamgraph-protocpp-western">&nbsp;void XamPNM::setGray(int x, int y, Uint8 v ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Fixe le pixel de coordonnées <font face="Courier New, monospace">x</font>,
+<font face="Courier New, monospace">y</font> avec le niveau de gris <font face="Courier New, monospace">v</font>.</p>
+
+<a name="normalize"></a>
+<p class="xamgraph-protocpp-western">&nbsp;Uint8 XamPNM::normalize(int v ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne la valeur normalisée entre 0 et <a href="#maxval">maxVal()</A> de la composante de teinte spécifiée en argument.</p>
+
+<a name="_spectrum"></a>
+<p class="xamgraph-chapitre-western">Spectres RGB</p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">XamPNM maintient en permanence des tables
+de distribution des pixels de l'image contenue dans le '<i>raster</i>'. Une table de distribution contient, pour chaque valeur possible de composante (valeur comprise entre 0 et <a href="#maxval">maxVal()</A>), le nombre de pixels de l'image proposant cette valeur.</p>
+<p>Ces informations permettent d'obtenir le spectre lumineux de l'image.</font></p>
+
+<a name="spectrummaxvalue"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::spectrumMaxValue() ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Retourne l'ordonnée maximale des tables de distribution.</p>
+
+<a name="rspectrum"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::rSpectrum(int index ) ;</p>
+<a name="gspectrum"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::gSpectrum(int index ) ;</p>
+<a name="bspectrum"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::bSpectrum(int index ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthodes d'obtention des distributions des composantes R, G ou B pour la valeur de composante <font face="Courier New, monospace">index</font>.</p>
+
+<a name="spectrum"></a>
+<p class="xamgraph-protocpp-western">&nbsp;int XamPNM::spectrum(int index ) ;</p>
+<p style="margin-left: 2cm; margin-bottom: 0.5cm">Méthode retournant la moyenne des distributions RGB pour la valeur de composante <font face="Courier New, monospace">index</font>.</p>
+
+<a name="_meo"></a>
+<p class="xamgraph-chapitre-western">Mise en oeuvre</p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">
+Créer un répertoire de travail pour l’application C++ à développer, importer dans ce répertoire une
+copie du fichier <font face="Courier New, monospace">Makefile</font>
+fourni par la distribution <a href="XamGraph-sdl.html">XamGraph</a>.</p>
+<p>Ce fichier de commandes <i>make</i> contient déjà toutes les instructions requises pour la prise en compte de la classe XamPNM ; il suffit pour cela de décommenter la dernière ligne de la rubrique PARAMETRAGE (<font face="Courier New, monospace"> WITH_XAMPNM = 1 </font>).
+</font></p>
+
+<p class="xamgraph-chapitre2-western">Programme minimal</p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">
+Le <i>main.cpp</i> ci-dessous montre comment visualiser une image PNM dont le chemin d'accès est transmis sur la ligne de commandes :
+</font></p>
+<pre style="margin-left: 2cm; margin-bottom: 0.5cm; font-size: 10pt">
+#include &lt;iostream&gt;
+using namespace std ;
+
+#include &lt;xamgraph.h&gt;
+#include &lt;xampnm.h&gt;
+
+#define	ESC	0x1b
+
+<a href="XamGraph-sdl.html">XamGraph</a>* graph = NULL ;
+
+void keyUpHandler(int key, int modifier ) { if ( key == ESC ) graph->quit() ; }
+
+int main(int argc, char** argv )
+{
+	cout << "XamPNM version " << XamPNM::version() << endl ;
+
+	<font color="#0040C0"><i>// chargement de l'image PNM</i></font>
+	XamPNM*	image = new XamPNM( argv[1] ) ;
+	if ( image->openFailed() ) return -1 ;
+
+	<font color="#0040C0"><i>// affichage des caractéristiques de l'image</i></font>
+	cout << "PNM type   : P" << image->magicNumber() ;
+	cout << " (" << ( image->isRaw() ? "raw" : "plain" ) << ")" << endl ;
+	cout << "size       : " << image->width() << " x " << image->height() << endl ;
+
+	<font color="#0040C0"><i>// création et association du 'display'</i></font>
+	graph = new <a href="XamGraph-sdl.html">XamGraph</a>( image->width(), image->height(), "XamPNM min test" ) ;
+	if ( graph == NULL )	return -2 ;
+	image->setDisplay( graph ) ;
+
+	<font color="#0040C0"><i>// projection indirecte de l'image sur le 'display'</i></font>
+	graph->setDrawingArea( XAM_DRAWING_BITMAP ) ;
+	image->write() ;
+	graph->updateScreen() ;
+
+	<font color="#0040C0"><i>// boucle d'événements (fin par touche Esc)</i></font>
+	graph->connectKeyDownEvent( keyUpHandler ) ;
+	graph->run() ;
+
+	return 0 ;
+}
+</pre>
+
+<a name="_heritage"></a>
+<p class="xamgraph-chapitre2-western">Spécialisation de XamPNM</p>
+<p style="margin-bottom: 0.5cm"><font size="3" style="font-size: 12pt">
+La classe XamPNM offre une base de développement de manipulations d'images. La mise en place de méthodes de traitement d'images peut être réalisée par simple dérivation de la classe...</p>
+<p>En guise d'exemple, les extraits de code qui suivent montrent une classe nommée CImgProcessing dérivée de XamPNM, avec quelques embryons de méthodes de traitement :</font></p>
+
+<pre style="margin-left: 2cm; margin-bottom: 0.5cm; font-size: 10pt">
+<font color="#0040C0"><i><b>// cimgprocessing.h</b></i></font>
+<font color="#0040C0"><i><b>// -------------------------------------------------------------</b></i></font>
+
+#ifndef CIMGPROCESSING_H
+#define CIMGPROCESSING_H
+
+#include &lt;xampnm.h&gt;
+
+class CImgProcessing : public XamPNM
+{
+  public:
+    CImgProcessing( const char* fname ) : XamPNM( fname ) {}
+  	CImgProcessing( int w, int h, bool rgb = true ) : XamPNM( w, h, rgb ) {}
+    void method1() ;
+    void method2( const XamPNM& mask ) ;
+    void method3() ;
+} ;
+
+#endif
+
+<font color="#0040C0"><i><b>// cimgprocessing.cpp</b></i></font>
+<font color="#0040C0"><i><b>// -------------------------------------------------------------</b></i></font>
+
+#include "cimgprocessing.h"
+
+<font color="#0040C0"><i>// filtrage spectral : opérateur NON (inversion colorimétrique)
+// exemple de traitement de l'image courante par modification directe du 'raster'
+// le résultat est projeté sur le 'display'</i></font>
+
+void CImgProcessing::method1()
+{
+    for ( int j = 0 ; j < height() ; j++ ) {
+        for ( int i = 0 ; i < width() ; i++ ) {
+            setRed( i, j, ~red(i,j) ) ;
+            setGreen( i, j, ~green(i,j) ) ;
+            setBlue( i, j, ~blue(i,j) ) ;
+        }
+    }
+    write() ;
+}
+
+<font color="#0040C0"><i>// opérateur de base OU
+// exemple de traitement direct de l'image courante
+// avec exploitation d'une autre image jouant le rôle de masque
+// le résultat est projeté sur le 'display'</i></font>
+
+void CimgProcessing::method2( const XamPNM& mask )
+{
+    int w = width() ;
+    int h = height() ;
+    surfaceSize(w, h, mask ) ;
+
+    for ( int j = 0 ; j < w ; j++ ) {
+        for ( int i = 0 ; i < h ; i++ ) {
+            setRed( i, j, red(i,j) | mask.red(i,j) ) ;
+            setGreen( i, j, green(i,j) | mask.green(i,j) ) ;
+            setBlue( i, j, blue(i,j) | mask.blue(i,j) ) ;
+        }
+    }
+    write() ;
+}
+
+<font color="#0040C0"><i>// transformation géométrique : reflet horizontal
+// exemple de transformation indirect de l'image courante
+// lorsque celle-ci ne doit pas varier au cours du traitement
+// les points calculés sont envoyés sur le 'display' qui sert de tampon
+// le 'display' est recopié dans le 'raster' en fin de traitement</i></font>
+
+void CImgProcessing::method3()
+{
+    if ( gr == NULL ) return ;
+
+    int w = width() ;
+    int h = height() ;
+    surfaceSize(w, h ) ;
+
+    for ( int j = 0 ; j < w ; j++ ) {
+        for ( int i = 0 ; i < h ; i++ ) {
+            Uint8 r = red(i, j ) ;
+            Uint8 g = green(i, j ) ;
+            Uint8 b = blue(i, j ) ;
+            gr->putPixel( w - 1 - i, j, gr->rgb( r, g, b ) ) ;
+        }
+    }
+    read() ;
+}
+</pre>
+
+<p align="right" style="margin-bottom: 0.5cm"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>XamPNM
+documentation HTML – mise à jour&nbsp;: 14/03/2017</i></font></font></p>
+</body>
+</html>

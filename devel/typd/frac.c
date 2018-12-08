@@ -28,6 +28,6 @@ int     main(int argc, char **argv)
     }
     numerateur = (FloatArg(1) * 10) - entier;
     denominateur = puiss - 1;
-    printf("%0.f/%0.f\n%f",numerateur,denominateur,numerateur/denominateur);
+    printf("%0.f/%0.f\n%f\n",numerateur,denominateur,numerateur/denominateur);
     return (0);
 }

@@ -1,0 +1,22 @@
+//
+// Macros fonctions de saisie sur la ligne de commande
+// argv.h
+
+#ifndef argv_h
+#define argv_h
+
+#include <stdio.h>
+
+#define NumberOfArg         (argc - 1 )
+#define LengthOfArg(N) 		( argc > (N) ? strlen(argv[N]) : 0 )
+#define IntegerArg(N) 		( argc > (N) ? atoi(argv[N]) : 0)
+#define LengthOfArg(N) 		( argc > (N) ? strlen(argv[N]) : 0 )
+#define FloatArg(N) 		( argc > (N) ? float(atof(argv[N]) : (float)0 ) )
+#define DoubleArg(N) 		( argc > (N) ? (atof(argv[N]) : (double)0 ) )
+#define StringArg(N) 		( argc > (N) ? (argv[N] : NULL) )
+#define CharacterArg(N,I) 	( argc > (N) ? (argv[N][I] : '\0') )
+
+#define BadNumberOfArg	(puts("mauvais nb d'arguments"), -1)
+#define InvalidArg	(puts("argument non valide"), -2)
+
+#endif /* argv_h */

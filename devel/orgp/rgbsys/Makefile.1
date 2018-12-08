@@ -1,0 +1,46 @@
+# Makefile for rgbsys project version 2.1
+
+# section 1: project data ------------------------------------------------------------
+
+VERSION	= 2.1
+DEFINES	= -DLINUX
+XINCDIR	= /usr/include
+XLIBDIR	= /usr/lib/x86_64-linux-gnu
+TARGET	= rgbsys
+
+# section 2: compiler configuration --------------------------------------------------
+
+CC		= gcc
+CFLAGS	= -Wall -O $(DEFINES)
+INCDIR	= -I. -I$(XINCDIR)
+LIBS	= -L$(XLIBDIR) -lX11 -lXext
+
+# section 3: makefile data -----------------------------------------------------------
+
+# section 4: main target -------------------------------------------------------------
+
+$(TARGET): main.o rgbsys.o rgbmap.o textbox.o colorbox.o
+	@echo "> édition de liens pour rgbsys..."
+	$(CC) -o $(TARGET) main.o rgbsys.o rgbmap.o textbox.o colorbox.o $(LIBS)
+
+main.o: main.c rgbsys.h rgbsysdefs.h rgbsystypes.h rgbmap.h widgets/textbox.h widgets/colorbox.h
+	@echo "> compilation de main.c..."
+	$(CC) $(CFLAGS) $(INCDIR) -o main.o -c main.c
+
+rgbsys.o: rgbsys.c rgbsys.h rgbsysdefs.h rgbsystypes.h rgbmap.h widgets/textbox.h widgets/colorbox.h
+	@echo "> compilation de rgbsys.c..."
+	$(CC) $(CFLAGS) $(INCDIR) -o rgbsys.o -c rgbsys.c
+
+rgbmap.o: rgbmap.c rgbmap.h rgbsystypes.h
+	@echo "> compilation de rgb.c..."
+	$(CC) $(CFLAGS) $(INCDIR) -o rgbmap.o -c rgbmap.c
+
+textbox.o: widgets/textbox.c widgets/textbox.h rgbsystypes.h
+	@echo "> compilation de textbox.c..."
+	$(CC) $(CFLAGS) $(INCDIR) -o textbox.o -c widgets/textbox.c
+
+colorbox.o: widgets/colorbox.c widgets/colorbox.h rgbsystypes.h
+	@echo "> compilation de colorbox.c..."
+	$(CC) $(CFLAGS) $(INCDIR) -o colorbox.o -c widgets/colorbox.c
+
+# section 5: other targets -----------------------------------------------------------

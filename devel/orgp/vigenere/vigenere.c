@@ -121,8 +121,10 @@ int vigenereCleanText(char *txt)
     int j = 0;
     while (txt[i])
     {
+        if (islower(txt[i]))
+            return(toupper(txt[i]));
         if (isalpha(txt[i]))
-        {
+    {
             txt[j] = txt[i];
             j++;
         }
