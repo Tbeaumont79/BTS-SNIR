@@ -1,0 +1,84 @@
+# Makefile for rgbsys project version 2.1
+
+# section 1: project data ------------------------------------------------------------
+SRC = main.c rgbsys.c rgbmap.c widgets/textbox.c widgets/colorbox.c
+INC = rgbsysdefs.h rbgsystypes.h rgbsys.h rgbmap.h widgets/textbox.h widgets/colorbox.h
+VERSION	= 2.1
+DEFINES	= -DLINUX
+XINCDIR	= /usr/include
+XLIBDIR	= /usr/lib/x86_64-linux-gnu
+TARGET	= rgbsys
+DESTDIR = /usr/local/bin
+# section 2: compiler configuration --------------------------------------------------
+
+CC		= gcc
+CFLAGS	= -Wall -O $(DEFINES)
+INCDIR	= -I. -I$(XINCDIR)
+LIBS	= -L$(XLIBDIR) -lX11 -lXext
+
+# section 3: makefile data -----------------------------------------------------------
+MAKEDIR = mkdir
+OBJSDIR = .objs
+OBJS = $(addprefix $(OBJSDIR)/, $(notdir $(SRC:.c=.o) ) )
+COPYFILE = cp -f
+DELFILE = rm -rf
+DEPSFILE = $(DEPSDIR)/$(notdir $(subst .o,.d,$@))
+DEPSDIR = .deps
+DEPS = $(addprefix $(DEPSDIR)/, $(notdir $(SRC:.o=.d) ) )
+.PHONY: mkdepsdir mkobjsdir all install clean
+# section 4: main target -------------------------------------------------------------
+
+$(TARGET): $(OBJS)
+	@echo "> édition de liens pour $@..."
+	$(CC) -o $@ $^ $(LIBS)
+
+$(OBJSDIR)/main.o: main.c
+	@echo ">  recherche de dependance pour $<..."
+	$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCDIR) -MM -MF $(DEPSFILE) -MP -MT $@ -MT $(DEPSFILE) $<
+	@echo "> compilation de $<..."
+
+$(OBJSDIR)/rgbsys.o: rgbsys.c
+	@echo "> recherche de dependance pour $<..."
+	$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCDIR) -MM -MF $(DEPSFILE) -MP -MT $@ -MT $(DEPSFILE) $<
+	@echo "> compilation de $<..."
+
+$(OBJSDIR)/rgbmap.o: rgbmap.c
+	@echo "> recherche de dependance pour $<..."
+	$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCDIR) -MM -MF $(DEPSFILE) -MP -MT $@ -MT $(DEPSFILE) $<
+	@echo "> compilation de $<..."
+
+$(OBJSDIR)/textbox.o: widgets/textbox.c
+	@echo "> recherche de dependance pour $<..."
+	$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCDIR) -MM -MF $(DEPSFILE) -MP -MT $@ -MT $(DEPSFILE) $<
+	@echo "> compilation de $<..."
+
+$(OBJSDIR)/colorbox.o: widgets/colorbox.c
+	@echo "> recherche de dependance pour $<..."
+	$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCDIR) -MM -MF $(DEPSFILE) -MP -MT $@ -MT $(DEPSFILE) $<
+	@echo "> compilation de $<..."
+ifeq "$(shell ls $(DEPSDIR) 2>/dev/null)" "$(sort $(notdir $(DEPS) ) )"
+include $(DEPS)
+endif
+
+# section 5: other targets ----------------------------------------------------------
+mkdepsdir:
+	@if ! [ -e "$(DEPSDIR)" ] ; then $(MAKEDIR) $(DEPSDIR) ; fi 
+mkobjsdir:
+	@if ! [ -e "$(OBJSDIR)" ] ; then $(MAKEDIR) $(OBJSDIR) ; fi 
+all:    mkobjsdir mkdepsdir $(TARGET)
+install:
+	@echo "> installation rgbsys..."
+	@$(COPYFILE) $(TARGET) $(DESTDIR)
+
+clean:
+	@echo "> supression du programme en cours..."
+	@$(DELFILE) $(OBJSDIR) 
+	@$(DELFILE) $(TARGET) 
+	@$(DELFILE) $(DESTDIR)/$(TARGET)
+	@$(DELFILE) $(DEPSDIR)
+    

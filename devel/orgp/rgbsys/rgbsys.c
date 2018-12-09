@@ -24,7 +24,7 @@
  |  more details < http://www.gnu.org/licenses/gpl.txt >.
  + ------------------------------------------------------------------------- */
 
-#include <rgbsys.h>
+#include "rgbsys.h"
 
 int dBox[2] ;	// mode, copyright widgets
 int rBox[5] ;	// "red" widgets

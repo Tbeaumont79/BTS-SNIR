@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <rgbsystypes.h>
+#include "rgbsystypes.h"
 
 #define MAXNUMOFRGB	1024	/*!< nombre max. d'entrées RGB */
 

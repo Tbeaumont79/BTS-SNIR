@@ -1,9 +1,9 @@
-/* ----------------------------------------------------------------------------
- |
- |	Nom :			rgbmap.c
- |
- |	Type :			DEPENDANCE
- |	Sujet :			rgbsys - gestion de la palette de couleurs RGB
+    /* ----------------------------------------------------------------------------
+     |
+     |	Nom :			rgbmap.c
+     |
+     |	Type :			DEPENDANCE
+     |	Sujet :			rgbsys - gestion de la palette de couleurs RGB
  |
  |	Version :		2.1
  |	Création :		2001
@@ -24,7 +24,7 @@
  |  more details < http://www.gnu.org/licenses/gpl.txt >.
  + ------------------------------------------------------------------------- */
 
-#include <rgbmap.h>
+#include "rgbmap.h"
 
 /*!
  *	\private

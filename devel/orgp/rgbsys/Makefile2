@@ -8,7 +8,6 @@ XINCDIR	= /usr/include
 XLIBDIR	= /usr/lib/x86_64-linux-gnu
 TARGET	= rgbsys
 DESTDIR = /usr/local/bin
-COPYFILE = cp -f
 # section 2: compiler configuration --------------------------------------------------
 
 CC		= gcc
@@ -17,6 +16,7 @@ INCDIR	= -I. -I$(XINCDIR)
 LIBS	= -L$(XLIBDIR) -lX11 -lXext
 
 # section 3: makefile data -----------------------------------------------------------
+COPYFILE = cp -f
 DELFILE = rm -rf
 .PHONY: all install clean
 # section 4: main target -------------------------------------------------------------
@@ -46,11 +46,13 @@ colorbox.o: widgets/colorbox.c widgets/colorbox.h rgbsystypes.h
 	$(CC) $(CFLAGS) $(INCDIR) -o colorbox.o -c widgets/colorbox.c
 
 # section 5: other targets -----------------------------------------------------------
+all:    $(TARGET)
+install:
+	@echo "> installation rgbsys..."
+	@$(COPYFILE) $(TARGET) $(DESTDIR)
 
-install: 
-	@echo "> installation de rgbsus."
-	@$(COPYFILE) $(DESTDIR)
-
-clean: 
-	@echo "> suppression du programme"
-	@$(DELFILE) *.o $(TARGET) 
+clean:
+	@echo "> supression du programme en cours..."
+	@$(DELFILE) *.o 
+	@$(DELFILE) $(TARGET) 
+	@$(DELFILE) $(DESTDIR)/$(TARGET)

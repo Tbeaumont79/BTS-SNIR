@@ -53,7 +53,7 @@
  *	Rgbsys est écrit en C et basé sur la bibliothèque XLib.
  */
  
-#include <rgbsys.h>
+#include "rgbsys.h"
 
 int main(int argc, char* argv[] ) 
 {

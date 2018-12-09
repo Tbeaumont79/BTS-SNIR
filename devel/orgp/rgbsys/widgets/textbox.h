@@ -37,7 +37,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <rgbsystypes.h>
+#include "../rgbsystypes.h"
 
 #define	MAXNUMOFTEXTBOX	  20	/*!< nombre max. de widgets TextBox */
 #define MAXTEXTLENGTH	  80	/*!< taille max. du texte d'un TextBox */

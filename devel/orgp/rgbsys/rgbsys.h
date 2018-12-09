@@ -33,11 +33,11 @@
  				de l'application 'rgbsys'.
  */
  
-#include <rgbsysdefs.h>
-#include <rgbsystypes.h>
-#include <rgbmap.h>
-#include <widgets/textbox.h>
-#include <widgets/colorbox.h>
+#include "rgbsysdefs.h"
+#include "rgbsystypes.h"
+#include "rgbmap.h"
+#include "widgets/textbox.h"
+#include "widgets/colorbox.h"
 
 void createChildren(Display* dpy, int screen, Visual* visual, Window parent ) ;
 void setChildrenGeometry(int w, int h ) ;

@@ -37,7 +37,7 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <rgbsystypes.h>
+#include "../rgbsystypes.h"
 
 #define	MAXNUMOFCOLORBOX	10	/*!< nombre max. de widgets ColorBox */
 
