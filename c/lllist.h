@@ -10,7 +10,7 @@ typedef struct Pelem
 {
     int a;
     char *txt;
-    Pelem next;
+    struct Pelem *next;
 } item;
 
 void Free_list();
