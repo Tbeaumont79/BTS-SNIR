@@ -1,5 +1,5 @@
 #include "fibonacci.h"
-
+#include "lllist.h"
 int main(int argc, char **argv)
 {
     int narg = 1;
@@ -26,10 +26,16 @@ int main(int argc, char **argv)
         obj.identValue = 0;
         for (i = 0; i < len; ++i)
             obj.identValue += (i + 1) * *( p + i );
-        obj.identKey = fibonacci( obj.identValue ); 
-        
-        narg++;@
+        obj.identkey = fibonacci( obj.identValue ); 
+        newItem(obj);        
+        narg++;
     }
-//parcour liste chainé
+    TObj* p = firstItem();
+    while (p != NULL)
+    {
+        printf("%-6s - %4u - %08x\n",p->ident,p->identValue,p->identkey);
+        p = nextItem();
+    }
+    freeAll();
     return (0);
 }
