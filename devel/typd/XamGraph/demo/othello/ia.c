@@ -107,6 +107,7 @@ int	IaCalculCoup( Othellier* oth, int niv )		// recherche meilleur coup
 
 	if ( niv == 1 )	{							// choix aléatoire ?
 		srand( time(NULL) ) ;
+unsigned fibonacci1(unsigned n)
 		ind = rand() % nbCj ;
 	}
 	else if ( niv == 2 ) {

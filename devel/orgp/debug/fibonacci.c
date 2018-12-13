@@ -1,12 +1,13 @@
 #include "fibonacci.h"
-
-unsigned fibonacci(unsigned n)
+unsigned fibonacci_o(unsigned n)
 {
     if (n < 2)
+    {
         return n;
-    return (fibonacci(n - 1) + fibonacci(n-2));
+    }
+    return (fibonacci_o(n - 1) + fibonacci_o(n - 2));
 }
-unsigned fibonacci1(unsigned n)
+unsigned fibonacci_r(unsigned n)
 {
     static unsigned n2 = 0;
     static unsigned n1 = 1;
@@ -25,15 +26,14 @@ unsigned fibonacci1(unsigned n)
     n2 = n1;
     n1 = tmp;
 
-    return (fibonacci(n - 1));
+    return (fibonacci_r(n - 1));
 }
-
-unsigned fibonacci2(unsigned n)
+unsigned fibonacci(unsigned n)
 {
     static unsigned n2 = 0;
     static unsigned n1 = 1;
     unsigned tmp;
-    
+
     if (n == 0)
         return (0);
     while ( n > 1)
