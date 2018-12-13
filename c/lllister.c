@@ -1,3 +1,11 @@
 #include "lllister.h"
 
-void Free_list()
+item first;
+
+void create_Element(item *new,item *contact)
+{
+    new->next = contact;
+    contact = new;
+
+    
+}
