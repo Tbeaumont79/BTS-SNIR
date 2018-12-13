@@ -6,9 +6,7 @@
 #include <string.h>
 
 
-typedef struct Pelem *Telem;
-
-Pelem
+typedef struct Pelem
 {
     int a;
     char *txt;
