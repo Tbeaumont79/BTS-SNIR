@@ -1,5 +1,5 @@
-#ifndef FIBONACCI_h
-
+#ifndef FIBONACCI_H
+#define FIBONACCI_H
 
 #include <stdlib.h>
 #include <stdio.h>

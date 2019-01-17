@@ -1,18 +1,21 @@
 #include "lllist.h"
 #include "fibonacci.h"
+
 typedef struct _item* PItem;
 
 typedef struct _item {
     TObj obj;
     PItem next;
 } TItem;
+
 PItem first = NULL;
 PItem other;
 
 void newItem(TObj obj)
 {
 
-    PItem item = (PItem)malloc (sizeof(TItem));
+     PItem item = (PItem)malloc (sizeof(TItem));
+     printf("%lu\n",sizeof(item));
     if (item == NULL)
         return ;
     memcpy(&(item->obj), &obj,sizeof(TObj));
